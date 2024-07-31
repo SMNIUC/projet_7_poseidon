@@ -17,9 +17,9 @@ public class RuleNameService
 
     public List<RuleName> getAllRulenames( )
     {
-        List<RuleName> allRatingsList = new ArrayList<>( );
-        ruleNameRepository.findAll( ).forEach( allRatingsList::add );
-        return allRatingsList;
+        List<RuleName> allRulenamesList = new ArrayList<>( );
+        ruleNameRepository.findAll( ).forEach( allRulenamesList::add );
+        return allRulenamesList;
     }
 
     public RuleName findRulenameById( Integer ruleId )

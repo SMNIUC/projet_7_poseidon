@@ -34,13 +34,6 @@ public class RatingService
     }
 
     @Transactional
-    public void deleteRating( Integer ratingId )
-    {
-        Rating ratingToDelete = findRatingById( ratingId );
-        ratingRepository.delete( ratingToDelete );
-    }
-
-    @Transactional
     public void updateRating( Integer ratingId, Rating rating )
     {
         Rating ratingToUpdate = findRatingById( ratingId );
@@ -49,5 +42,12 @@ public class RatingService
         ratingToUpdate.setMoodysRating( rating.getMoodysRating( ) );
         ratingToUpdate.setOrderNumber( rating.getOrderNumber( ) );
         ratingRepository.save( ratingToUpdate );
+    }
+
+    @Transactional
+    public void deleteRating( Integer ratingId )
+    {
+        Rating ratingToDelete = findRatingById( ratingId );
+        ratingRepository.delete( ratingToDelete );
     }
 }
