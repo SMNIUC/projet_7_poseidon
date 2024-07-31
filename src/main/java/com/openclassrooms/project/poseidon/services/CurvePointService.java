@@ -20,12 +20,14 @@ public class CurvePointService
     {
         List<CurvePoint> allCurvepointsList = new ArrayList<>( );
         curvePointRepository.findAll( ).forEach( allCurvepointsList::add );
+
         return allCurvepointsList;
     }
 
     public CurvePoint findCurvepointById( Integer curveId )
     {
-        return curvePointRepository.getCurvePointById( curveId );
+        return curvePointRepository.findById( curveId )
+                .orElseThrow( ( ) -> new IllegalArgumentException( "Invalid curve Id:" + curveId ) );
     }
 
     @Transactional
@@ -39,13 +41,10 @@ public class CurvePointService
     @Transactional
     public void updateCurvepoint( Integer curveId, CurvePoint curvePoint )
     {
-        CurvePoint curvePointToUpdate = findCurvepointById( curveId );
-        curvePointToUpdate.setCurveId( curvePoint.getCurveId( ) );
         Timestamp updateDate = new Timestamp( System.currentTimeMillis( ) );
-        curvePointToUpdate.setAsOfDate( updateDate );
-        curvePointToUpdate.setTerm( curvePoint.getTerm( ) );
-        curvePointToUpdate.setValue( curvePoint.getValue( ) );
-        curvePointRepository.save( curvePointToUpdate );
+        curvePoint.setAsOfDate( updateDate );
+        curvePoint.setId( curveId );
+        curvePointRepository.save( curvePoint );
     }
 
     @Transactional

@@ -35,15 +35,13 @@ public class CurveController
     }
 
     @PostMapping("/curvePoint/validate")
-    public String validate( @Valid CurvePoint curvePoint, BindingResult result, Model model )
+    public String validate( @Valid CurvePoint curvePoint, BindingResult result )
     {
-        // Checks that the data is valid according to the CurvePoint bean validation annotations
         if ( result.hasErrors( ) )
         {
             return "curvePoint/add";
         }
 
-        // If data is valid, save new CurvePoint to db
         curvePointService.addNewCurvepoint( curvePoint );
 
         return "redirect:/curvePoint/list";
@@ -59,27 +57,23 @@ public class CurveController
     }
 
     @PostMapping("/curvePoint/update/{id}")
-    public String updateCurvepoint( @PathVariable( "id" ) Integer curveId, @Valid CurvePoint curvePoint, BindingResult result, Model model )
+    public String updateCurvepoint( @PathVariable( "id" ) Integer curveId, @Valid CurvePoint curvePoint, BindingResult result )
     {
-        // Checks that the data is valid according to the CurvePoint bean validation annotations
         if ( result.hasErrors( ) )
         {
             return "curvePoint/update";
         }
 
-        // If data is valid, update CurvePoint in db
         curvePointService.updateCurvepoint( curveId, curvePoint );
 
         return "redirect:/curvePoint/list";
     }
 
     @GetMapping("/curvePoint/delete/{id}")
-    public String deleteCurvepoint(@PathVariable( "id" ) Integer curveId, Model model )
+    public String deleteCurvepoint(@PathVariable( "id" ) Integer curveId )
     {
-        // Finds the CurvePoint by Id and delete the CurvePoint
         curvePointService.deleteCurvepoint( curveId );
 
-        // Returns to CurvePoint list
         return "redirect:/curvePoint/list";
     }
 }

@@ -35,15 +35,13 @@ public class TradeController
     }
 
     @PostMapping("/trade/validate")
-    public String validate( @Valid Trade trade, BindingResult result, Model model )
+    public String validate( @Valid Trade trade, BindingResult result )
     {
-        // Checks that the data is valid according to the trade bean validation annotations
         if ( result.hasErrors( ) )
         {
             return "trade/add";
         }
 
-        // If data is valid, save new trade to db
         tradeService.addNewTrade( trade );
 
         return "redirect:/trade/list";
@@ -59,27 +57,23 @@ public class TradeController
     }
 
     @PostMapping("/trade/update/{id}")
-    public String updateTrade( @PathVariable( "id" ) Integer tradeId, @Valid Trade trade, BindingResult result, Model model )
+    public String updateTrade( @PathVariable( "id" ) Integer tradeId, @Valid Trade trade, BindingResult result )
     {
-        // Checks that the data is valid according to the trade bean validation annotations
         if ( result.hasErrors( ) )
         {
             return "trade/update";
         }
 
-        // If data is valid, update trade in db
         tradeService.updateTrade( tradeId, trade );
 
         return "redirect:/trade/list";
     }
 
     @GetMapping("/trade/delete/{id}")
-    public String deleteTrade( @PathVariable( "id" ) Integer tradeId, Model model )
+    public String deleteTrade( @PathVariable( "id" ) Integer tradeId )
     {
-        // Finds the trade by Id and delete the trade
         tradeService.deleteTrade( tradeId );
 
-        // Returns to trade list
         return "redirect:/trade/list";
     }
 }

@@ -7,5 +7,4 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface CurvePointRepository extends CrudRepository<CurvePoint, Integer>
 {
-    CurvePoint getCurvePointById( int id );
 }

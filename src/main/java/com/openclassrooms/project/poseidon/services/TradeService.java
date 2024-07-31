@@ -19,12 +19,14 @@ public class TradeService
     {
         List<Trade> allTradesList = new ArrayList<>( );
         tradeRepository.findAll( ).forEach( allTradesList::add );
+
         return allTradesList;
     }
 
     public Trade findTradeById( Integer tradeId )
     {
-        return tradeRepository.getTradeByTradeId( tradeId );
+        return tradeRepository.findById( tradeId )
+                .orElseThrow( ( ) -> new IllegalArgumentException( "Invalid trade Id:" + tradeId ) );
     }
 
     @Transactional
@@ -36,11 +38,8 @@ public class TradeService
     @Transactional
     public void updateTrade( Integer tradeId, Trade trade )
     {
-        Trade tradeToUpdate = findTradeById( tradeId );
-        tradeToUpdate.setAccount( trade.getAccount( ) );
-        tradeToUpdate.setType( trade.getType( ) );
-        tradeToUpdate.setBuyQuantity( trade.getBuyQuantity( ) );
-        tradeRepository.save( tradeToUpdate );
+        trade.setTradeId( tradeId );
+        tradeRepository.save( trade );
     }
 
     @Transactional

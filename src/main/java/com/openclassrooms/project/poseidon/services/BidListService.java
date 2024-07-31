@@ -19,12 +19,14 @@ public class BidListService
     {
         List<BidList> allBidsList = new ArrayList<>( );
         bidListRepository.findAll( ).forEach( allBidsList::add );
+
         return allBidsList;
     }
 
     public BidList findBidById( Integer bidId )
     {
-        return bidListRepository.getBidListByBidListId( bidId );
+        return bidListRepository.findById( bidId )
+                .orElseThrow( ( ) -> new IllegalArgumentException( "Invalid bid Id:" + bidId ) );
     }
 
     @Transactional
@@ -36,11 +38,8 @@ public class BidListService
     @Transactional
     public void updateBid( Integer bidId, BidList bid )
     {
-        BidList bidToUpdate = findBidById( bidId );
-        bidToUpdate.setAccount( bid.getAccount( ) );
-        bidToUpdate.setType( bid.getType( ) );
-        bidToUpdate.setBidQuantity( bid.getBidQuantity( ) );
-        bidListRepository.save( bidToUpdate );
+        bid.setBidListId( bidId );
+        bidListRepository.save( bid );
     }
 
     @Transactional

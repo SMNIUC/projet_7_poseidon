@@ -35,17 +35,13 @@ public class RatingController
     }
 
     @PostMapping("/rating/validate")
-    public String validate( @Valid Rating rating, BindingResult result, Model model )
+    public String validate( @Valid Rating rating, BindingResult result )
     {
-        //TODO -> model any use?
-
-        // Checks that the data is valid according to the rating bean validation annotations
         if ( result.hasErrors( ) )
         {
             return "rating/add";
         }
 
-        // If data is valid, save new rating to db
         ratingService.addNewRatings( rating );
 
         return "redirect:/rating/list";
@@ -61,17 +57,13 @@ public class RatingController
     }
 
     @PostMapping("/rating/update/{id}")
-    public String updateRating( @PathVariable( "id" ) Integer ratingId, @Valid Rating rating, BindingResult result, Model model )
+    public String updateRating( @PathVariable( "id" ) Integer ratingId, @Valid Rating rating, BindingResult result )
     {
-        //TODO -> model any use?
-
-        // Checks that the data is valid according to the rating bean validation annotations
         if ( result.hasErrors( ) )
         {
             return "rating/update";
         }
 
-        // If data is valid, update rating in db
         ratingService.updateRating( ratingId, rating );
 
         return "redirect:/rating/list";
@@ -80,7 +72,6 @@ public class RatingController
     @GetMapping("/rating/delete/{id}")
     public String deleteRating ( @PathVariable( "id" ) Integer ratingId )
     {
-        // Finds the Rating by id and delete the Rating
         ratingService.deleteRating( ratingId );
 
         return "redirect:/rating/list";

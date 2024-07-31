@@ -7,5 +7,4 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface RatingRepository extends CrudRepository<Rating, Integer>
 {
-    Rating getRatingById( int id );
 }

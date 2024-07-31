@@ -7,5 +7,4 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface RuleNameRepository extends CrudRepository<RuleName, Integer>
 {
-    RuleName getRuleNameById( int id );
 }

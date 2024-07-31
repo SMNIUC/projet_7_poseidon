@@ -7,5 +7,4 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface TradeRepository extends CrudRepository<Trade, Integer>
 {
-    Trade getTradeByTradeId( Integer tradeId );
 }

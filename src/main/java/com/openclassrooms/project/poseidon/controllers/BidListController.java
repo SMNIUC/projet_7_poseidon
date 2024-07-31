@@ -35,15 +35,13 @@ public class BidListController
     }
 
     @PostMapping("/bidList/validate")
-    public String validate( @Valid BidList bid, BindingResult result, Model model )
+    public String validate( @Valid BidList bid, BindingResult result )
     {
-        // Checks that the data is valid according to the bidlist bean validation annotations
         if ( result.hasErrors( ) )
         {
             return "bidList/add";
         }
 
-        // If data is valid, save new bid to db
         bidListService.addNewBid( bid );
 
         return "redirect:/bidList/list";
@@ -59,27 +57,23 @@ public class BidListController
     }
 
     @PostMapping("/bidList/update/{id}")
-    public String updateBid( @PathVariable ("id" ) Integer bidId, @Valid BidList bidList, BindingResult result, Model model )
+    public String updateBid( @PathVariable ("id" ) Integer bidId, @Valid BidList bidList, BindingResult result )
     {
-        // Checks that the data is valid according to the bidList bean validation annotations
         if ( result.hasErrors( ) )
         {
             return "bidList/update";
         }
 
-        // If data is valid, update bid in db
         bidListService.updateBid( bidId, bidList );
 
         return "redirect:/bidList/list";
     }
 
     @GetMapping("/bidList/delete/{id}")
-    public String deleteBid(@PathVariable( "id" ) Integer bidId, Model model )
+    public String deleteBid(@PathVariable( "id" ) Integer bidId )
     {
-        // Finds the bid by Id and delete the bid
         bidListService.deleteBid( bidId );
 
-        // Returns to bid list
         return "redirect:/bidList/list";
     }
 }

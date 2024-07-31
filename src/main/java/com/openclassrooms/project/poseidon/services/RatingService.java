@@ -25,7 +25,8 @@ public class RatingService
 
     public Rating findRatingById( Integer ratingId )
     {
-        return ratingRepository.getRatingById( ratingId );
+        return ratingRepository.findById( ratingId )
+                .orElseThrow( ( ) -> new IllegalArgumentException( "Invalid rating Id:" + ratingId ) );
     }
 
     @Transactional
@@ -44,8 +45,7 @@ public class RatingService
     @Transactional
     public void deleteRating( Integer ratingId )
     {
-        Rating ratingToDelete = ratingRepository.findById( ratingId )
-                .orElseThrow( ( ) -> new IllegalArgumentException( "Invalid rating Id:" + ratingId ) );
+        Rating ratingToDelete = findRatingById( ratingId );
         ratingRepository.delete( ratingToDelete );
     }
 }

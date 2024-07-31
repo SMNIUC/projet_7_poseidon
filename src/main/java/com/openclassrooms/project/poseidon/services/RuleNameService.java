@@ -19,12 +19,14 @@ public class RuleNameService
     {
         List<RuleName> allRulenamesList = new ArrayList<>( );
         ruleNameRepository.findAll( ).forEach( allRulenamesList::add );
+
         return allRulenamesList;
     }
 
     public RuleName findRulenameById( Integer ruleId )
     {
-        return ruleNameRepository.getRuleNameById( ruleId );
+        return ruleNameRepository.findById( ruleId )
+                .orElseThrow( ( ) -> new IllegalArgumentException( "Invalid rule Id:" + ruleId ) );
     }
 
     @Transactional
@@ -36,14 +38,8 @@ public class RuleNameService
     @Transactional
     public void updateRulename( RuleName ruleName, Integer ruleId )
     {
-        RuleName ruleNameToUpdate = findRulenameById( ruleId );
-        ruleNameToUpdate.setName( ruleName.getName( ) );
-        ruleNameToUpdate.setDescription( ruleName.getDescription( ) );
-        ruleNameToUpdate.setJson( ruleName.getJson( ) );
-        ruleNameToUpdate.setTemplate( ruleName.getTemplate( ) );
-        ruleNameToUpdate.setSqlPart( ruleName.getSqlPart( ) );
-        ruleNameToUpdate.setSqlStr( ruleNameToUpdate.getSqlStr( ) );
-        ruleNameRepository.save( ruleNameToUpdate );
+        ruleName.setId( ruleId );
+        ruleNameRepository.save( ruleName );
     }
 
     @Transactional

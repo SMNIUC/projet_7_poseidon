@@ -35,7 +35,7 @@ public class RuleNameController
     }
 
     @PostMapping("/ruleName/validate")
-    public String validate( @Valid RuleName ruleName, BindingResult result, Model model )
+    public String validate( @Valid RuleName ruleName, BindingResult result )
     {
         if ( result.hasErrors( ) )
         {
@@ -57,24 +57,23 @@ public class RuleNameController
     }
 
     @PostMapping("/ruleName/update/{id}")
-    public String updateRuleName( @PathVariable( "id" ) Integer ruleId, @Valid RuleName ruleName, BindingResult result, Model model )
+    public String updateRuleName( @PathVariable( "id" ) Integer ruleId, @Valid RuleName ruleName, BindingResult result )
     {
-        // Checks that the data is valid according to the rulename bean validation annotations
         if ( result.hasErrors( ) )
         {
             return "ruleName/update";
         }
 
-        // If data is valid, update rulename in db
         ruleNameService.updateRulename( ruleName, ruleId );
 
         return "redirect:/ruleName/list";
     }
 
     @GetMapping("/ruleName/delete/{id}")
-    public String deleteRuleName( @PathVariable( "id" ) Integer ruleId, Model model )
+    public String deleteRuleName( @PathVariable( "id" ) Integer ruleId )
     {
         ruleNameService.deleteRulename( ruleId );
+
         return "redirect:/ruleName/list";
     }
 }
