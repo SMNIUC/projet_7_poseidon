@@ -29,9 +29,8 @@ public class CurveController
     }
 
     @GetMapping("/curvePoint/add")
-    public String addCurvepointForm( CurvePoint curvePoint, Model model )
+    public String addCurvepointForm( CurvePoint curvePoint )
     {
-        model.addAttribute( "curvePoint", curvePoint );
         return "curvePoint/add";
     }
 

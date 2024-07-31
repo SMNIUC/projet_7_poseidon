@@ -1,6 +1,8 @@
 package com.openclassrooms.project.poseidon.controllers;
 
 import com.openclassrooms.project.poseidon.domain.Trade;
+import com.openclassrooms.project.poseidon.services.TradeService;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
@@ -15,17 +17,18 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @RequiredArgsConstructor
 public class TradeController
 {
-    // TODO: Inject Trade service
+    private final TradeService tradeService;
 
     @RequestMapping("/trade/list")
-    public String home( Model model )
+    public String home( HttpServletRequest request, Model model )
     {
-        // TODO: find all Trade, add to model
+        model.addAttribute( "httpServletRequest", request );
+        model.addAttribute( "trades", tradeService.getAllTrades( ) );
         return "trade/list";
     }
 
     @GetMapping("/trade/add")
-    public String addUser( Trade bid )
+    public String addTradeForm( Trade trade )
     {
         return "trade/add";
     }
@@ -33,28 +36,49 @@ public class TradeController
     @PostMapping("/trade/validate")
     public String validate( @Valid Trade trade, BindingResult result, Model model )
     {
-        // TODO: check data valid and save to db, after saving return Trade list
-        return "trade/add";
+        // Checks that the data is valid according to the trade bean validation annotations
+        if ( result.hasErrors( ) )
+        {
+            return "trade/add";
+        }
+
+        // If data is valid, save new trade to db
+        tradeService.addNewTrade( trade );
+
+        return "redirect:/trade/list";
     }
 
     @GetMapping("/trade/update/{id}")
-    public String showUpdateForm( @PathVariable( "id" ) Integer id, Model model )
+    public String showUpdateForm( @PathVariable( "id" ) Integer tradeId, Model model )
     {
-        // TODO: get Trade by Id and to model then show to the form
+        Trade tradeToUpdate = tradeService.findTradeById( tradeId );
+        model.addAttribute( "trade", tradeToUpdate );
+
         return "trade/update";
     }
 
     @PostMapping("/trade/update/{id}")
-    public String updateTrade( @PathVariable( "id" ) Integer id, @Valid Trade trade, BindingResult result, Model model )
+    public String updateTrade( @PathVariable( "id" ) Integer tradeId, @Valid Trade trade, BindingResult result, Model model )
     {
-        // TODO: check required fields, if valid call service to update Trade and return Trade list
+        // Checks that the data is valid according to the trade bean validation annotations
+        if ( result.hasErrors( ) )
+        {
+            return "trade/update";
+        }
+
+        // If data is valid, update trade in db
+        tradeService.updateTrade( tradeId, trade );
+
         return "redirect:/trade/list";
     }
 
     @GetMapping("/trade/delete/{id}")
-    public String deleteTrade( @PathVariable( "id" ) Integer id, Model model )
+    public String deleteTrade( @PathVariable( "id" ) Integer tradeId, Model model )
     {
-        // TODO: Find Trade by Id and delete the Trade, return to Trade list
+        // Finds the trade by Id and delete the trade
+        tradeService.deleteTrade( tradeId );
+
+        // Returns to trade list
         return "redirect:/trade/list";
     }
 }

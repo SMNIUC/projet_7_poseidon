@@ -29,9 +29,8 @@ public class RuleNameController
     }
 
     @GetMapping("/ruleName/add")
-    public String addRuleForm( RuleName bid, Model model )
+    public String addRuleForm( RuleName ruleName )
     {
-        model.addAttribute( "ruleName", bid );
         return "ruleName/add";
     }
 

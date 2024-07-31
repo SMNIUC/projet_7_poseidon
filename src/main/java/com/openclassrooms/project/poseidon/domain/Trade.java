@@ -1,6 +1,8 @@
 package com.openclassrooms.project.poseidon.domain;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
 import java.sql.Timestamp;
@@ -15,12 +17,15 @@ public class Trade
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer tradeId;
 
+    @NotBlank(message = "Please enter an account number.")
     @Column(name = "account")
     private String account;
 
+    @NotBlank(message = "Please enter a trade type.")
     @Column(name = "type")
     private String type;
 
+    @NotNull(message = "must be not null.")
     @Column(name = "buyQuantity")
     private Double buyQuantity;
 
