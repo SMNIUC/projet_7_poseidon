@@ -1,11 +1,9 @@
 package com.openclassrooms.project.poseidon.controllers;
 
 import com.openclassrooms.project.poseidon.domain.User;
-import com.openclassrooms.project.poseidon.repositories.UserRepository;
+import com.openclassrooms.project.poseidon.services.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -18,14 +16,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @RequiredArgsConstructor
 public class UserController
 {
-    // TODO wtf is going on here?
-    @Autowired
-    private UserRepository userRepository;
+    private final UserService userService;
 
     @RequestMapping("/user/list")
     public String home( Model model )
     {
-        model.addAttribute( "users", userRepository.findAll( ) );
+        model.addAttribute( "users", userService.getAllUsers( ) );
         return "user/list";
     }
 
@@ -36,50 +32,45 @@ public class UserController
     }
 
     @PostMapping("/user/validate")
-    public String validate( @Valid User user, BindingResult result, Model model )
+    public String validate( @Valid User user, BindingResult result )
     {
         if ( !result.hasErrors( ) )
         {
-            BCryptPasswordEncoder encoder = new BCryptPasswordEncoder( );
-            user.setPassword( encoder.encode( user.getPassword( ) ) );
-            userRepository.save( user );
-            model.addAttribute( "users", userRepository.findAll( ) );
+            userService.addNewUser( user );
+
             return "redirect:/user/list";
         }
         return "user/add";
     }
 
     @GetMapping("/user/update/{id}")
-    public String showUpdateForm( @PathVariable( "id" ) Integer id, Model model )
+    public String showUpdateForm( @PathVariable( "id" ) Integer userId, Model model )
     {
-        User user = userRepository.findById( id ).orElseThrow( ( ) -> new IllegalArgumentException( "Invalid user Id:" + id ) );
+        User user = userService.findUserById( userId );
         user.setPassword( "" );
         model.addAttribute( "user", user );
+
         return "user/update";
     }
 
     @PostMapping("/user/update/{id}")
-    public String updateUser( @PathVariable( "id" ) Integer id, @Valid User user, BindingResult result, Model model )
+    public String updateUser( @PathVariable( "id" ) Integer userId, @Valid User user, BindingResult result )
     {
         if ( result.hasErrors( ) )
         {
             return "user/update";
         }
 
-        BCryptPasswordEncoder encoder = new BCryptPasswordEncoder( );
-        user.setPassword( encoder.encode( user.getPassword( ) ) );
-        user.setId( id );
-        userRepository.save (user );
-        model.addAttribute( "users", userRepository.findAll( ) );
+        userService.updateUser( userId, user );
+
         return "redirect:/user/list";
     }
 
     @GetMapping("/user/delete/{id}")
-    public String deleteUser( @PathVariable( "id" ) Integer id, Model model )
+    public String deleteUser( @PathVariable( "id" ) Integer userId )
     {
-        User user = userRepository.findById( id ).orElseThrow( ( ) -> new IllegalArgumentException( "Invalid user Id:" + id ) );
-        userRepository.delete( user );
-        model.addAttribute( "users", userRepository.findAll( ) );
+        userService.deleteUser( userId );
+
         return "redirect:/user/list";
     }
 }

@@ -19,6 +19,7 @@ public class RatingService
     {
         List<Rating> allRatingsList = new ArrayList<>( );
         ratingRepository.findAll( ).forEach( allRatingsList::add );
+
         return allRatingsList;
     }
 
@@ -36,18 +37,15 @@ public class RatingService
     @Transactional
     public void updateRating( Integer ratingId, Rating rating )
     {
-        Rating ratingToUpdate = findRatingById( ratingId );
-        ratingToUpdate.setSandPRating( rating.getSandPRating( ) );
-        ratingToUpdate.setFitchRating( rating.getFitchRating( ) );
-        ratingToUpdate.setMoodysRating( rating.getMoodysRating( ) );
-        ratingToUpdate.setOrderNumber( rating.getOrderNumber( ) );
-        ratingRepository.save( ratingToUpdate );
+        rating.setId( ratingId );
+        ratingRepository.save( rating );
     }
 
     @Transactional
     public void deleteRating( Integer ratingId )
     {
-        Rating ratingToDelete = findRatingById( ratingId );
+        Rating ratingToDelete = ratingRepository.findById( ratingId )
+                .orElseThrow( ( ) -> new IllegalArgumentException( "Invalid rating Id:" + ratingId ) );
         ratingRepository.delete( ratingToDelete );
     }
 }

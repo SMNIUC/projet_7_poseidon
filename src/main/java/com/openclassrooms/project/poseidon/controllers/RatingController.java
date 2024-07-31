@@ -78,14 +78,11 @@ public class RatingController
     }
 
     @GetMapping("/rating/delete/{id}")
-    public String deleteRating ( @PathVariable( "id" ) Integer ratingId, Model model )
+    public String deleteRating ( @PathVariable( "id" ) Integer ratingId )
     {
-        //TODO -> model any use?
-
-        // Finds the Rating by Id and delete the Rating
+        // Finds the Rating by id and delete the Rating
         ratingService.deleteRating( ratingId );
 
-        // Returns to Rating list
         return "redirect:/rating/list";
     }
 }
