@@ -24,6 +24,7 @@ public class TradeController
     {
         model.addAttribute( "httpServletRequest", request );
         model.addAttribute( "trades", tradeService.getAllTrades( ) );
+
         return "trade/list";
     }
 

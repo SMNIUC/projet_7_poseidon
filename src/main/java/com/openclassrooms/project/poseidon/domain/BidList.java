@@ -1,6 +1,8 @@
 package com.openclassrooms.project.poseidon.domain;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
 import java.sql.Timestamp;
@@ -13,14 +15,17 @@ public class BidList
     @Id
     @Column(name = "BidListId")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer BidListId;
+    private Integer bidListId;
 
+    @NotBlank(message = "Account is mandatory")
     @Column(name = "account")
     private String account;
 
+    @NotBlank(message = "Type is mandatory")
     @Column(name = "type")
     private String type;
 
+    @NotNull(message = "must not be null.")
     @Column(name = "bidQuantity")
     private Double bidQuantity;
 

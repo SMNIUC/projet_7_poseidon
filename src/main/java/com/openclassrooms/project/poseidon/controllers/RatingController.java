@@ -24,6 +24,7 @@ public class RatingController
     {
         model.addAttribute( "httpServletRequest", request );
         model.addAttribute( "ratings", ratingService.getAllRatings( ) );
+
         return "rating/list";
     }
 

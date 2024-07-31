@@ -2,6 +2,7 @@ package com.openclassrooms.project.poseidon.controllers;
 
 import com.openclassrooms.project.poseidon.domain.BidList;
 import com.openclassrooms.project.poseidon.services.BidListService;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
@@ -19,9 +20,11 @@ public class BidListController
     private final BidListService bidListService;
 
     @RequestMapping("/bidList/list")
-    public String home( Model model )
+    public String home( HttpServletRequest request, Model model )
     {
-//        model.addAttribute( bidListService.getAllBidLists( id ) );
+        model.addAttribute( "httpServletRequest", request );
+        model.addAttribute( "bidLists", bidListService.getAllBids( ) );
+
         return "bidList/list";
     }
 
@@ -34,28 +37,49 @@ public class BidListController
     @PostMapping("/bidList/validate")
     public String validate( @Valid BidList bid, BindingResult result, Model model )
     {
-        // TODO: check data valid and save to db, after saving return bid list
-        return "bidList/add";
+        // Checks that the data is valid according to the bidlist bean validation annotations
+        if ( result.hasErrors( ) )
+        {
+            return "bidList/add";
+        }
+
+        // If data is valid, save new bid to db
+        bidListService.addNewBid( bid );
+
+        return "redirect:/bidList/list";
     }
 
     @GetMapping("/bidList/update/{id}")
-    public String showUpdateForm( @PathVariable( "id" ) Integer id, Model model )
+    public String showUpdateForm( @PathVariable( "id" ) Integer bidId, Model model )
     {
-        // TODO: get Bid by Id and to model then show to the form
+        BidList bidToUpdate = bidListService.findBidById( bidId );
+        model.addAttribute( "bidList", bidToUpdate );
+
         return "bidList/update";
     }
 
     @PostMapping("/bidList/update/{id}")
-    public String updateBid( @PathVariable ("id" ) Integer id, @Valid BidList bidList, BindingResult result, Model model )
+    public String updateBid( @PathVariable ("id" ) Integer bidId, @Valid BidList bidList, BindingResult result, Model model )
     {
-        // TODO: check required fields, if valid call service to update Bid and return list Bid
+        // Checks that the data is valid according to the bidList bean validation annotations
+        if ( result.hasErrors( ) )
+        {
+            return "bidList/update";
+        }
+
+        // If data is valid, update bid in db
+        bidListService.updateBid( bidId, bidList );
+
         return "redirect:/bidList/list";
     }
 
     @GetMapping("/bidList/delete/{id}")
-    public String deleteBid(@PathVariable( "id" ) Integer id, Model model )
+    public String deleteBid(@PathVariable( "id" ) Integer bidId, Model model )
     {
-        // TODO: Find Bid by Id and delete the bid, return to Bid list
+        // Finds the bid by Id and delete the bid
+        bidListService.deleteBid( bidId );
+
+        // Returns to bid list
         return "redirect:/bidList/list";
     }
 }
