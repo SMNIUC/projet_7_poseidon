@@ -57,20 +57,20 @@ public class BidListController
     }
 
     @PostMapping("/bidList/update/{id}")
-    public String updateBid( @PathVariable ("id" ) Integer bidId, @Valid BidList bidList, BindingResult result )
+    public String updateBid( @PathVariable ("id" ) Integer bidId, @Valid BidList bid, BindingResult result )
     {
         if ( result.hasErrors( ) )
         {
             return "bidList/update";
         }
 
-        bidListService.updateBid( bidId, bidList );
+        bidListService.updateBid( bidId, bid );
 
         return "redirect:/bidList/list";
     }
 
     @GetMapping("/bidList/delete/{id}")
-    public String deleteBid(@PathVariable( "id" ) Integer bidId )
+    public String deleteBid( @PathVariable( "id" ) Integer bidId )
     {
         bidListService.deleteBid( bidId );
 

@@ -4,7 +4,6 @@ import com.openclassrooms.project.poseidon.repositories.UserRepository;
 import com.openclassrooms.project.poseidon.services.UserDetailsService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -29,15 +28,6 @@ public class SpringSecurityConfig
     }
 
     @Bean
-    public DaoAuthenticationProvider authenticationProvider( UserRepository userRepository ) {
-        DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider( );
-        authProvider.setUserDetailsService( userDetailsService( userRepository ) );
-        authProvider.setPasswordEncoder( passwordEncoder( ) );
-
-        return authProvider;
-    }
-
-    @Bean
     public PersistentTokenRepository persistentTokenRepository( ) {
         return new InMemoryTokenRepositoryImpl( );
     }
@@ -56,7 +46,7 @@ public class SpringSecurityConfig
                 )
                 .formLogin(formLogin -> formLogin
                         .loginPage( "/login" ) // only page(s) available without being logged in
-                        .failureUrl("/login?error=true")
+                        .failureUrl("/berror")
                         .defaultSuccessUrl( "/", true )
                         .permitAll( ) )
                 .logout( LogoutConfigurer::permitAll )

@@ -1,8 +1,9 @@
 package com.openclassrooms.project.poseidon.domain;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Digits;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
+import jakarta.validation.constraints.PositiveOrZero;
 import lombok.Data;
 
 import java.sql.Timestamp;
@@ -18,9 +19,7 @@ public class CurvePoint
     private Integer id;
 
     @NotNull(message = "must not be null.")
-    //TODO -> not showing, Failed to convert property value of type java.lang.String to required type java.lang.Integer
-    // for property curveId; For input string: "jgkmgu" message instead
-    @Digits(integer = Integer.MAX_VALUE, fraction = 0, message = "must contain only digits.")
+    @Positive(message = "must be a positive number.")
     @Column(name = "CurveId")
     private Integer curveId;
 
@@ -28,12 +27,12 @@ public class CurvePoint
     private Timestamp asOfDate;
 
     @NotNull(message = "must not be null.")
-//    @Digits(integer = 10, fraction = 2, message = "must be a numeric value with up to 10 digits and 2 decimal places.")
+    @PositiveOrZero(message = "must be a positive number or zero.")
     @Column(name = "term")
     private Double term;
 
     @NotNull(message = "must not be null.")
-//    @Digits(integer = 10, fraction = 2, message = "must be a numeric value with up to 10 digits and 2 decimal places.")
+    @Positive(message = "must be a positive number.")
     @Column(name = "value")
     private Double value;
 

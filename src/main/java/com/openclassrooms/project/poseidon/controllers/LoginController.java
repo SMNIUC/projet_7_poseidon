@@ -1,17 +1,16 @@
 package com.openclassrooms.project.poseidon.controllers;
 
-import com.openclassrooms.project.poseidon.repositories.UserRepository;
+import com.openclassrooms.project.poseidon.services.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.servlet.ModelAndView;
 
-@RequiredArgsConstructor
 @Controller
+@RequiredArgsConstructor
 public class LoginController
 {
-    //TODO -> review not autowired
-    private UserRepository userRepository;
+    private final UserService userService;
 
     @GetMapping("/login")
     public ModelAndView login( )
@@ -25,12 +24,12 @@ public class LoginController
     public ModelAndView getAllUserArticles( )
     {
         ModelAndView mav = new ModelAndView( );
-        mav.addObject( "users", userRepository.findAll( ) );
+        mav.addObject( "users", userService.getAllUsers( ) );
         mav.setViewName( "user/list" );
         return mav;
     }
 
-    @GetMapping("/error")
+    @GetMapping("/berror")
     public ModelAndView error( )
     {
         ModelAndView mav = new ModelAndView( );

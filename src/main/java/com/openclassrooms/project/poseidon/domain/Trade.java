@@ -3,6 +3,7 @@ package com.openclassrooms.project.poseidon.domain;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
 import lombok.Data;
 
 import java.sql.Timestamp;
@@ -18,6 +19,7 @@ public class Trade
     private Integer tradeId;
 
     @NotBlank(message = "Please enter an account number.")
+    @Positive(message = "must be a positive number.")
     @Column(name = "account")
     private String account;
 
@@ -26,6 +28,7 @@ public class Trade
     private String type;
 
     @NotNull(message = "must be not null.")
+    @Positive(message = "must be a positive number.")
     @Column(name = "buyQuantity")
     private Double buyQuantity;
 

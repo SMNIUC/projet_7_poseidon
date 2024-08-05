@@ -16,6 +16,8 @@ public class UserService
 {
     private final UserRepository userRepository;
 
+    private final BCryptPasswordEncoder encoder;
+
     public List<User> getAllUsers( )
     {
         List<User> allUsersList = new ArrayList<>( );
@@ -33,7 +35,6 @@ public class UserService
     @Transactional
     public void addNewUser( User user )
     {
-        BCryptPasswordEncoder encoder = new BCryptPasswordEncoder( );
         user.setPassword( encoder.encode( user.getPassword( ) ) );
         userRepository.save( user );
     }
@@ -41,7 +42,6 @@ public class UserService
     @Transactional
     public void updateUser( Integer userId, User user )
     {
-        BCryptPasswordEncoder encoder = new BCryptPasswordEncoder( );
         user.setPassword( encoder.encode( user.getPassword( ) ) );
         user.setId( userId );
         userRepository.save( user );

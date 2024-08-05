@@ -5,13 +5,45 @@
         <link rel="stylesheet" href="../../css/bootstrap.min.css"/>
     </head>
     <body>
-        <h3> HOME PAGE </h3>
-        <div class="col-6">
-            <a href="/bidList/list">Bid List</a>&nbsp;|&nbsp;
-            <a href="/curvePoint/list">Curve Points</a>&nbsp;|&nbsp;
-            <a href="/rating/list">Ratings</a>&nbsp;|&nbsp;
-            <a href="/trade/list">Trade</a>&nbsp;|&nbsp;
-            <a href="/ruleName/list">Rule</a>
-        </div>
+        <nav class="navbar navbar-expand-lg bg-body-tertiary">
+            <div class="container-fluid">
+                <a class="navbar-brand text-dark" href="#">POSEIDON</a>
+                <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                        <li class="nav-item">
+                            <a class="nav-link black active text-dark" aria-current="page" href="#">Home Page</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/bidList/list">Bid List</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/curvePoint/list">Curve Points</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/rating/list">Ratings</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/trade/list">Trades</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/ruleName/list">Rules</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/user/list">Users</a>
+                        </li>
+                        <li class="nav-item">
+                            <div class="nav-link">
+                                Logged in user: <b th:inline="text" class="user">[(${httpServletRequest.remoteUser})]</b>
+                            </div>
+                        </li>
+                        <li class="nav-item">
+                            <form th:action="@{/logout}" method="POST">
+                                <button class="btn btn-outline-success" type="submit">Log out</button>
+                            </form>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
     </body>
 </html>

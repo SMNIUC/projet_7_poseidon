@@ -2,6 +2,7 @@ package com.openclassrooms.project.poseidon.controllers;
 
 import com.openclassrooms.project.poseidon.domain.User;
 import com.openclassrooms.project.poseidon.services.UserService;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
@@ -19,14 +20,15 @@ public class UserController
     private final UserService userService;
 
     @RequestMapping("/user/list")
-    public String home( Model model )
+    public String home( HttpServletRequest request, Model model )
     {
+        model.addAttribute( "httpServletRequest", request );
         model.addAttribute( "users", userService.getAllUsers( ) );
         return "user/list";
     }
 
     @GetMapping("/user/add")
-    public String addUser( User bid )
+    public String addUser( User user )
     {
         return "user/add";
     }
@@ -40,6 +42,7 @@ public class UserController
 
             return "redirect:/user/list";
         }
+
         return "user/add";
     }
 
