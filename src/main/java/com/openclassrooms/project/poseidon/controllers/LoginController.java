@@ -29,7 +29,7 @@ public class LoginController
         return mav;
     }
 
-    @GetMapping("/berror")
+    @GetMapping("/error")
     public ModelAndView error( )
     {
         ModelAndView mav = new ModelAndView( );

@@ -1,6 +1,7 @@
 package com.openclassrooms.project.poseidon.serviceTests;
 
 import com.openclassrooms.project.poseidon.domain.User;
+import com.openclassrooms.project.poseidon.domain.dto.UserDTO;
 import com.openclassrooms.project.poseidon.repositories.UserRepository;
 import com.openclassrooms.project.poseidon.services.UserService;
 import org.junit.jupiter.api.BeforeAll;
@@ -17,6 +18,7 @@ import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -34,6 +36,7 @@ public class UserServiceTest
     private BCryptPasswordEncoder passwordEncoder;
 
     private static User user;
+    private static UserDTO userDTO;
 
     @BeforeAll
     static void setUp( )
@@ -43,6 +46,12 @@ public class UserServiceTest
         user.setUsername( "Username" );
         user.setPassword( "Password!1" );
         user.setRole( "ADMIN" );
+
+        userDTO = new UserDTO( );
+        userDTO.setId( user.getId( ) );
+        userDTO.setUsername( user.getUsername( ) );
+        userDTO.setPassword( user.getPassword( ) );
+        userDTO.setRole( user.getRole( ) );
     }
 
     @Test
@@ -86,32 +95,49 @@ public class UserServiceTest
     }
 
     @Test
+    void getUserDTO( )
+    {
+        // GIVEN
+        when( userRepository.findById( anyInt( ) ) ).thenReturn( Optional.of( user ) );
+
+        // WHEN
+        UserDTO userDTOtest = userServiceUnderTest.getUserDTO( 1 );
+
+        // THEN
+        verify( userRepository ).findById( 1 );
+        assertThat( userDTOtest.getId( ) ).isEqualTo( user.getId( ) );
+        assertThat( userDTOtest.getUsername( ) ).isEqualTo( user.getUsername( ) );
+        assertThat( userDTOtest.getPassword( ) ).isBlank( );
+        assertThat( userDTOtest.getRole( ) ).isEqualTo( user.getRole( ) );
+    }
+
+    @Test
     void addNewUser( )
     {
         // WHEN
-        userServiceUnderTest.addNewUser( user );
+        userServiceUnderTest.addNewUser( userDTO );
 
         // THEN
-        verify( userRepository ).save( user );
+        verify( userRepository ).save( any( User.class ) );
         verify( passwordEncoder ).encode( "Password!1" );
-        assertThat( "Password!1" ).isNotEqualTo( user.getPassword( ) );
     }
 
     @Test
     void updateUser( )
     {
         // GIVEN
-        User updatedUser = new User( );
-        updatedUser.setPassword( "newPassword2@" );
+        userDTO.setPassword( "newPassword2@" );
+        userDTO.setUsername( "newUsername2" );
+        when( userRepository.findById( anyInt( ) ) ).thenReturn( Optional.of( user ) );
 
         // WHEN
-        userServiceUnderTest.updateUser( 1, updatedUser );
+        userServiceUnderTest.updateUser( 1, userDTO );
 
         // THEN
-        verify( userRepository ).save( updatedUser );
-        assertThat( updatedUser.getId( ) ).isEqualTo( 1 );
+        verify( userRepository ).save( user );
+        assertThat( user.getUsername( ) ).isEqualTo( "newUsername2" );
+        assertThat( userDTO.getId( ) ).isEqualTo( 1 );
         verify( passwordEncoder ).encode( "newPassword2@" );
-        assertThat( "newPassword2@" ).isNotEqualTo( user.getPassword( ) );
     }
 
     @Test

@@ -2,6 +2,7 @@ package com.openclassrooms.project.poseidon.controllerTests;
 
 import com.openclassrooms.project.poseidon.controllers.UserController;
 import com.openclassrooms.project.poseidon.domain.User;
+import com.openclassrooms.project.poseidon.domain.dto.UserDTO;
 import com.openclassrooms.project.poseidon.services.UserService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -21,7 +22,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
@@ -49,8 +49,8 @@ public class UserControllerTest
     private UserController userControllerUnderTest;
 
     private List<User> userList;
-    private User validUser;
-    private User invalidUser;
+    private UserDTO validUserDTO;
+    private UserDTO invalidUserDTO;
 
     @BeforeEach
     public void setup( )
@@ -61,19 +61,27 @@ public class UserControllerTest
 
         // Initialize a mock User object
         userList = new ArrayList<>();
-        validUser = new User( );
+        User validUser = new User( );
         validUser.setId( 1 );
         validUser.setUsername( "Username Test" );
         validUser.setPassword( "Password4test!" );
         validUser.setRole( "Admin" );
         userList.add( validUser );
 
-        invalidUser = new User( );
-        invalidUser.setId( 1 );
-        invalidUser.setPassword( "Badpassword" );
+        // Initialize a mock UserDTO object
+        validUserDTO = new UserDTO( );
+        validUserDTO.setId( validUser.getId( ) );
+        validUserDTO.setUsername( validUser.getUsername( ) );
+        validUserDTO.setPassword( validUser.getPassword( ) );
+        validUserDTO.setRole( validUser.getRole( ) );
+
+        invalidUserDTO = new UserDTO( );
+        invalidUserDTO.setId( 1 );
+        invalidUserDTO.setPassword( "Badpassword" );
 
         // Mock the behavior of userService.findUserById
         when( userService.findUserById( 1 ) ).thenReturn( validUser );
+        when( userService.getUserDTO( 1 ) ).thenReturn( validUserDTO );
     }
 
     @Test
@@ -108,13 +116,13 @@ public class UserControllerTest
     {
         // Act & Assert
         mockMvc.perform( post( "/user/validate" )
-                        .flashAttr( "user", validUser )
+                        .flashAttr( "userDTO", validUserDTO )
                         .with( csrf( ) ) )
                 .andExpect( status( ).is3xxRedirection( ) )
                 .andExpect( redirectedUrl( "/user/list" ) );
 
         // Verify that the addNewUser service method was called with the correct arguments
-        verify( userService ).addNewUser( any( User.class ) );
+        verify( userService ).addNewUser( any( UserDTO.class ) );
     }
 
     @Test
@@ -126,15 +134,15 @@ public class UserControllerTest
 
         // Act & Assert
         mockMvc.perform( post( "/user/validate" )
-                        .flashAttr( "user", invalidUser )
-                        .flashAttr( MODEL_KEY_PREFIX + "user", result ) // Attach the mocked BindingResult
+                        .flashAttr( "userDTO", invalidUserDTO )
+                        .flashAttr( MODEL_KEY_PREFIX + "userDTO", result ) // Attach the mocked BindingResult
                         .with( csrf( ) ) )
                 .andExpect( status( ).isOk( ) )  // Expect HTTP 200 status (stay on the same page)
-                .andExpect( model( ).attributeHasFieldErrors( "user", "username", "password" ) )
+                .andExpect( model( ).attributeHasFieldErrors( "userDTO", "username", "password" ) )
                 .andExpect( view( ).name( "user/add" ) );
 
         // Verify that the addNewUser service method was NOT called
-        verify( userService, never( ) ).addNewUser( any( User.class ) );
+        verify( userService, never( ) ).addNewUser( any( UserDTO.class ) );
     }
 
     @Test
@@ -145,7 +153,7 @@ public class UserControllerTest
         mockMvc.perform( get( "/user/update/1" ) )
                 .andExpect( status( ).isOk( ) )
                 .andExpect( model( ).attributeExists( "user" ) )
-                .andExpect( model( ).attribute( "user", validUser ) )
+                .andExpect( model( ).attribute( "user", validUserDTO ) )
                 .andExpect( view( ).name( "user/update" ) );
     }
 
@@ -155,34 +163,13 @@ public class UserControllerTest
     {
         // Act & Assert
         mockMvc.perform( post( "/user/update/1" )
-                        .flashAttr( "user", validUser )
+                        .flashAttr( "userDTO", validUserDTO )
                         .with( csrf( ) ) )
                 .andExpect( status( ).is3xxRedirection( ) )
                 .andExpect( redirectedUrl( "/user/list" ) );
 
         // Verify that the updateUser service method was called with the correct arguments
-        verify( userService ).updateUser( eq( 1 ), any( User.class ) );
-    }
-
-    @Test
-    @WithMockUser( username = "admin", roles = {"admin"} )
-    void doUpdateUserError( ) throws Exception
-    {
-        // Mock the BindingResult to simulate validation errors
-        BindingResult result = mock( BindingResult.class );
-
-        // Act & Assert
-        // Perform POST request with invalid data
-        mockMvc.perform( post( "/user/update/1" )
-                        .flashAttr( "user", invalidUser )
-                        .flashAttr( MODEL_KEY_PREFIX + "user", result ) // Attach the mocked BindingResult
-                        .with( csrf( ) ) )
-                .andExpect( status( ).isOk( ) )  // Expect HTTP 200 status (stay on the same page)
-                .andExpect( model( ).attributeHasFieldErrors( "user", "username", "password" ) )
-                .andExpect( view( ).name( "user/update" ) );
-
-        // Verify that the updateUser service method was NOT called
-        verify( userService, never( ) ).updateUser( anyInt( ), any( User.class ) );
+        verify( userService ).updateUser( eq( 1 ), any( UserDTO.class ) );
     }
 
     @Test

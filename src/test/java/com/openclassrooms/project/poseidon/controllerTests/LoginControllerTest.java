@@ -79,7 +79,7 @@ public class LoginControllerTest
     void viewErrorSuccessful( ) throws Exception
     {
         // Act & Assert
-        mockMvc.perform( get( "/berror" ) )
+        mockMvc.perform( get( "/error" ) )
                 .andExpect( status( ).isOk( ) )
                 .andExpect( model( ).attributeExists( "errorMsg" ) )
                 .andExpect( view( ).name("403" ) );

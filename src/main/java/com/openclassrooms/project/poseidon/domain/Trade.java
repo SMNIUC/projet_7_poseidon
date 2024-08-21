@@ -19,7 +19,6 @@ public class Trade
     private Integer tradeId;
 
     @NotBlank(message = "Please enter an account number.")
-    @Positive(message = "must be a positive number.")
     @Column(name = "account")
     private String account;
 

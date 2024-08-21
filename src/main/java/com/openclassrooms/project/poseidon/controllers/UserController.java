@@ -1,6 +1,6 @@
 package com.openclassrooms.project.poseidon.controllers;
 
-import com.openclassrooms.project.poseidon.domain.User;
+import com.openclassrooms.project.poseidon.domain.dto.UserDTO;
 import com.openclassrooms.project.poseidon.services.UserService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
@@ -28,17 +28,17 @@ public class UserController
     }
 
     @GetMapping("/user/add")
-    public String addUser( User user )
+    public String addUser( UserDTO userDTO )
     {
         return "user/add";
     }
 
     @PostMapping("/user/validate")
-    public String validate( @Valid User user, BindingResult result )
+    public String validate( @Valid UserDTO userDTO, BindingResult result )
     {
         if ( !result.hasErrors( ) )
         {
-            userService.addNewUser( user );
+            userService.addNewUser( userDTO );
 
             return "redirect:/user/list";
         }
@@ -49,22 +49,21 @@ public class UserController
     @GetMapping("/user/update/{id}")
     public String showUpdateForm( @PathVariable( "id" ) Integer userId, Model model )
     {
-        User user = userService.findUserById( userId );
-        user.setPassword( "" );
-        model.addAttribute( "user", user );
+        UserDTO userDTO = userService.getUserDTO( userId );
+        model.addAttribute( "user", userDTO );
 
         return "user/update";
     }
 
     @PostMapping("/user/update/{id}")
-    public String updateUser( @PathVariable( "id" ) Integer userId, @Valid User user, BindingResult result )
+    public String updateUser( @PathVariable( "id" ) Integer userId, @Valid UserDTO userDTO, BindingResult result )
     {
         if ( result.hasErrors( ) )
         {
             return "user/update";
         }
 
-        userService.updateUser( userId, user );
+        userService.updateUser( userId, userDTO );
 
         return "redirect:/user/list";
     }
