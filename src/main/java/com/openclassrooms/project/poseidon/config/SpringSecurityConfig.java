@@ -10,8 +10,6 @@ import org.springframework.security.config.annotation.web.configurers.AbstractHt
 import org.springframework.security.config.annotation.web.configurers.LogoutConfigurer;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.authentication.rememberme.InMemoryTokenRepositoryImpl;
-import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository;
 
 /**
  * <strong>SpringSecurityConfig</strong> is a configuration class that sets up security-related beans and
@@ -19,7 +17,7 @@ import org.springframework.security.web.authentication.rememberme.PersistentToke
  *
  * <p>This class is annotated with {@link Configuration} and {@link EnableWebSecurity} to indicate that it
  * provides configuration for web security. It defines beans for user details service, password encoder,
- * persistent token repository, and the security filter chain.</p>
+ * and the security filter chain.</p>
  *
  * <p>The configurations include disabling CSRF protection, setting up authorization rules, configuring
  * form-based login and logout mechanisms, and integrating custom user details service.</p>
@@ -58,21 +56,6 @@ public class SpringSecurityConfig
     @Bean
     public BCryptPasswordEncoder passwordEncoder( ) {
         return new BCryptPasswordEncoder( );
-    }
-
-    /**
-     * Creates and configures a {@link PersistentTokenRepository} bean for managing "remember me" functionality tokens.
-     *
-     * <p>
-     * This method returns an instance of {@link InMemoryTokenRepositoryImpl}, which stores persistent login tokens
-     * in memory. This allows users to stay logged in between sessions.
-     * </p>
-     *
-     * @return a new instance of {@link InMemoryTokenRepositoryImpl}
-     */
-    @Bean
-    public PersistentTokenRepository persistentTokenRepository( ) {
-        return new InMemoryTokenRepositoryImpl( );
     }
 
     /**
